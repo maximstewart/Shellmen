@@ -11,13 +11,13 @@ To Install manually:
 Type out these commands into a terminal--
 
 sudo cp shellMen.sh /bin/
-sudo chown root:root /bin/shellMen.sh 
-sudo chmod +x /bin/shellMen.sh 
+sudo chown root:root /bin/shellMen
+sudo chmod +x /bin/shellMen
 
 To Uninstall manually:
 Type out these commands into a terminal--
 
-sudo rm /bin/shellMen.sh
+sudo rm /bin/shellMen
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
