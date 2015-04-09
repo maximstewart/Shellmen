@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #---------------------------------------------------------------------------------------#
 mainMENU(){
-INPUT=/tmp/menu.sh.$$
+INPUT=/tmp/menu.txt
 dialog --clear --backtitle "Shellmen" \
 --title "[ M A I N - M E N U ]" \
 --menu "Please Select An Option" 16 50 15 \
@@ -152,7 +152,7 @@ done
 endMenuInsert=$(echo "2>"\"'${INPUT}'"\"")
 menuitmVar=$(echo 'menuitem=$(<"${INPUT}")')
 preCMD=$(echo "case \$menuitem in")
-menuCall=$(echo "Main_Menu) bash /bin/shellMen.sh ;;")
+menuCall=$(echo "Main_Menu) bash /bin/shellMen ;;")
 echo "$endMenuInsert" >> /tmp/sysMENU/${accss}.sh
 echo "$menuitmVar" >> /tmp/sysMENU/${accss}.sh
 echo "$preCMD" >> /tmp/sysMENU/${accss}.sh
@@ -216,7 +216,7 @@ touch /tmp/sysMENU/menu.list ;            			    # Creates a temp txt file calle
 sed -i "d" /tmp/sysMENU/menu.list ;					        # Clears the file menu.list to rcv new info
 ls /usr/share/applications/ >> /tmp/sysMENU/menu.list ; # lists current dir files to menu.list
 header=$(echo "#!/bin/bash
-INPUT=/tmp/menu.sh.\$$
+INPUT=/tmp/menu.txt
 dialog --clear --backtitle "\"Shellmen"\" \\
 --title "\"[ S U B - M E N U ]"\" \\
 --menu "\"Please Select An Option"\" 15 50 10 \\
