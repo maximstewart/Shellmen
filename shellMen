@@ -1,0 +1,243 @@
+#!/bin/bash
+#
+# By Maxim F. Stewart
+# Contact: [maxim2131@gmail.com] OR [gamer1119@gmail.com]
+#
+# Copyright 2013 Maxim F. Stewart
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#---------------------------------------------------------------------------------------#
+mainMENU(){
+INPUT=/tmp/menu.sh.$$
+dialog --clear --backtitle "Shellmen" \
+--title "[ M A I N - M E N U ]" \
+--menu "Please Select An Option" 16 50 15 \
+Accessories "General Programs" \
+System "Main System Programs" \
+Settings "Main System Settings" \
+Multimedia "Audio & Video Programs" \
+Graphics "Image Programs" \
+Games "Gaming Programs" \
+Office "Wordprocess & Documents Programs" \
+Development "Programing Programs" \
+Internet "Various Internet Related Programs" \
+Wine "Windows Exe & Program Support" 2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+	Accessories) bash /tmp/sysMENU/Accessories.sh ;;
+	System) bash /tmp/sysMENU/System.sh ;;
+	Settings) bash /tmp/sysMENU/Settings.sh ;;
+	Multimedia) bash /tmp/sysMENU/Multimedia.sh ;;
+	Graphics) bash /tmp/sysMENU/Graphics.sh ;;
+	Games) bash /tmp/sysMENU/Game.sh ;;
+	Office) bash /tmp/sysMENU/Office.sh ;;
+	Development) bash /tmp/sysMENU/Development.sh ;;
+	Internet) bash /tmp/sysMENU/Internet.sh ;;
+	Wine) bash /tmp/sysMENU/Wine.sh ;;
+	Exit) echo "Bye!"; break ;;
+esac
+}
+commandInsert(){
+x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ; # Variable set to number of lines filled in list.txt
+i="1"
+while [ $i -le $x ]; do
+line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list); # Reads the number of lines in list.txt then sets as a variable counting up to variable x
+filename="${line1%.*}"
+execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
+catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
+preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
+execCMD=$(echo "${filename}) exec ${filename} ;;")
+if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${accss}.sh
+fi
+if [[ "$catagory" == *"$dev"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${dev}.sh
+fi
+if [[ "$catagory" == *"$gme"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${gme}.sh
+fi
+if [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
+echo "$execCMD" >> /tmp/sysMENU/${int}.sh
+fi
+if [[ "$catagory" == *"$graph"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${graph}.sh
+fi
+if [[ "$catagory" == *"$offce"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${offce}.sh
+fi
+if [[ "$catagory" == *"$media*" ]] \
+|| [[ "$catagory" == *"$vid"* ]] \
+|| [[ "$catagory" == *"$audio"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${media}.sh
+fi
+if [[ "$catagory" == *"$sys"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${sys}.sh
+fi
+if [[ "$catagory" == *"$settngs"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${settngs}.sh
+fi
+if [[ "$catagory" == *"$wine"* ]]; then
+echo "$execCMD" >> /tmp/sysMENU/${wine}.sh
+fi
+i=$[$i++1];
+done	
+echo "esac" >> /tmp/sysMENU/${accss}.sh
+echo "esac" >> /tmp/sysMENU/${dev}.sh
+echo "esac" >> /tmp/sysMENU/${gme}.sh
+echo "esac" >> /tmp/sysMENU/${int}.sh
+echo "esac" >> /tmp/sysMENU/${graph}.sh
+echo "esac" >> /tmp/sysMENU/${offce}.sh
+echo "esac" >> /tmp/sysMENU/${media}.sh
+echo "esac" >> /tmp/sysMENU/${sys}.sh
+echo "esac" >> /tmp/sysMENU/${settngs}.sh
+echo "esac" >> /tmp/sysMENU/${wine}.sh
+chmod +x /tmp/sysMENU/*.sh
+mainMENU
+}
+menuHeaderInsert(){
+x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ; # Variable set to number of lines filled in list.txt
+i="1"
+while [ $i -le $x ]; do
+line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list); # Reads the number of lines in list.txt then sets as a variable counting up to variable x
+filename="${line1%.*}"
+execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
+catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
+preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
+comment=$(sed s/"Comment="//g <<< ${preComment})
+inputer=$(echo "$filename "\"$comment"\" \\")
+if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${accss}.sh
+fi
+if [[ "$catagory" == *"$dev"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${dev}.sh
+fi
+if [[ "$catagory" == *"$gme"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${gme}.sh
+fi
+if [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
+echo "$inputer" >> /tmp/sysMENU/${int}.sh
+fi
+if [[ "$catagory" == *"$graph"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${graph}.sh
+fi
+if [[ "$catagory" == *"$offce"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${offce}.sh
+fi
+if [[ "$catagory" == *"$media*" ]] \
+|| [[ "$catagory" == *"$vid"* ]] \
+|| [[ "$catagory" == *"$audio"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${media}.sh
+fi
+if [[ "$catagory" == *"$sys"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${sys}.sh
+fi
+if [[ "$catagory" == *"$settngs"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${settngs}.sh
+fi
+if [[ "$catagory" == *"$wine"* ]]; then
+echo "$inputer" >> /tmp/sysMENU/${wine}.sh
+fi
+i=$[$i++1];
+done
+endMenuInsert=$(echo "2>"\"'${INPUT}'"\"")
+menuitmVar=$(echo 'menuitem=$(<"${INPUT}")')
+preCMD=$(echo "case \$menuitem in")
+menuCall=$(echo "Main_Menu) bash /bin/shellMen.sh ;;")
+echo "$endMenuInsert" >> /tmp/sysMENU/${accss}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${accss}.sh
+echo "$preCMD" >> /tmp/sysMENU/${accss}.sh
+echo "$menuCall" >> /tmp/sysMENU/${accss}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${dev}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${dev}.sh
+echo "$preCMD" >> /tmp/sysMENU/${dev}.sh
+echo "$menuCall" >> /tmp/sysMENU/${dev}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${gme}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${gme}.sh
+echo "$preCMD" >> /tmp/sysMENU/${gme}.sh
+echo "$menuCall" >> /tmp/sysMENU/${gme}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${int}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${int}.sh
+echo "$preCMD" >> /tmp/sysMENU/${int}.sh
+echo "$menuCall" >> /tmp/sysMENU/${int}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${graph}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${graph}.sh
+echo "$preCMD" >> /tmp/sysMENU/${graph}.sh
+echo "$menuCall" >> /tmp/sysMENU/${graph}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${offce}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${offce}.sh
+echo "$preCMD" >> /tmp/sysMENU/${offce}.sh
+echo "$menuCall" >> /tmp/sysMENU/${offce}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${media}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${media}.sh
+echo "$preCMD" >> /tmp/sysMENU/${media}.sh
+echo "$menuCall" >> /tmp/sysMENU/${media}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${sys}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${sys}.sh
+echo "$preCMD" >> /tmp/sysMENU/${sys}.sh
+echo "$menuCall" >> /tmp/sysMENU/${sys}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${settngs}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${settngs}.sh
+echo "$preCMD" >> /tmp/sysMENU/${settngs}.sh
+echo "$menuCall" >> /tmp/sysMENU/${settngs}.sh
+echo "$endMenuInsert" >> /tmp/sysMENU/${wine}.sh
+echo "$menuitmVar" >> /tmp/sysMENU/${wine}.sh
+echo "$preCMD" >> /tmp/sysMENU/${wine}.sh
+echo "$menuCall" >> /tmp/sysMENU/${wine}.sh
+commandInsert
+}
+startScan() {
+clear
+accss="Accessories"
+util="Utility"
+media="Multimedia"
+vid="Video" 
+audio="Audio"
+dev="Development"
+gme="Game"
+net="Network"
+int="Internet"
+graph="Graphics"
+offce="Office"
+sys="System"
+settngs="Settings"
+wine="Wine"
+mkdir /tmp/sysMENU
+touch /tmp/sysMENU/menu.list ;            			    # Creates a temp txt file called menu.list in the temp folder of root
+sed -i "d" /tmp/sysMENU/menu.list ;					        # Clears the file menu.list to rcv new info
+ls /usr/share/applications/ >> /tmp/sysMENU/menu.list ; # lists current dir files to menu.list
+header=$(echo "#!/bin/bash
+INPUT=/tmp/menu.sh.\$$
+dialog --clear --backtitle "\"Shellmen"\" \\
+--title "\"[ S U B - M E N U ]"\" \\
+--menu "\"Please Select An Option"\" 15 50 10 \\
+Main_Menu "\"Goes To Main Menu"\" \\")
+echo "$header" > /tmp/sysMENU/${accss}.sh
+echo "$header" > /tmp/sysMENU/${dev}.sh
+echo "$header" > /tmp/sysMENU/${gme}.sh
+echo "$header" > /tmp/sysMENU/${int}.sh
+echo "$header" > /tmp/sysMENU/${graph}.sh
+echo "$header" > /tmp/sysMENU/${offce}.sh
+echo "$header" > /tmp/sysMENU/${media}.sh
+echo "$header" > /tmp/sysMENU/${sys}.sh
+echo "$header" > /tmp/sysMENU/${settngs}.sh
+echo "$header" > /tmp/sysMENU/${wine}.sh
+menuHeaderInsert
+}
+pre(){
+if [ -d /tmp/sysMENU/ ]; then
+mainMENU
+else
+startScan
+fi
+}
+pre
