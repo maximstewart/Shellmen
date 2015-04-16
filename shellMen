@@ -48,46 +48,37 @@ case $menuitem in
 esac
 }
 commandInsert(){
-x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ; # Variable set to number of lines filled in list.txt
+x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ;
 i="1"
 while [ $i -le $x ]; do
-line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list); # Reads the number of lines in list.txt then sets as a variable counting up to variable x
+line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list);
 filename="${line1%.*}"
 execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
 catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
 preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
 execCMD=$(echo "${filename}) exec ${filename} ;;")
 if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${accss}.sh
-fi
-if [[ "$catagory" == *"$dev"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${dev}.sh
-fi
-if [[ "$catagory" == *"$gme"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${gme}.sh
-fi
-if [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
-echo "$execCMD" >> /tmp/sysMENU/${int}.sh
-fi
-if [[ "$catagory" == *"$graph"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${graph}.sh
-fi
-if [[ "$catagory" == *"$offce"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${offce}.sh
-fi
-if [[ "$catagory" == *"$media*" ]] \
-|| [[ "$catagory" == *"$vid"* ]] \
-|| [[ "$catagory" == *"$audio"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${media}.sh
-fi
-if [[ "$catagory" == *"$sys"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${sys}.sh
-fi
-if [[ "$catagory" == *"$settngs"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${settngs}.sh
-fi
-if [[ "$catagory" == *"$wine"* ]]; then
-echo "$execCMD" >> /tmp/sysMENU/${wine}.sh
+		echo "$execCMD" >> /tmp/sysMENU/${accss}.sh
+	elif [[ "$catagory" == *"$dev"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${dev}.sh
+	elif [[ "$catagory" == *"$gme"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${gme}.sh
+	elif [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
+		echo "$execCMD" >> /tmp/sysMENU/${int}.sh
+	elif [[ "$catagory" == *"$graph"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${graph}.sh
+	elif [[ "$catagory" == *"$offce"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${offce}.sh
+	elif [[ "$catagory" == *"$media*" ]] \
+		|| [[ "$catagory" == *"$vid"* ]] \
+		|| [[ "$catagory" == *"$audio"* ]]; then
+			echo "$execCMD" >> /tmp/sysMENU/${media}.sh
+	elif [[ "$catagory" == *"$sys"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${sys}.sh
+	elif [[ "$catagory" == *"$settngs"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${settngs}.sh
+elif [[ "$catagory" == *"$wine"* ]]; then
+		echo "$execCMD" >> /tmp/sysMENU/${wine}.sh
 fi
 i=$[$i++1];
 done	
@@ -102,7 +93,7 @@ echo "esac" >> /tmp/sysMENU/${sys}.sh
 echo "esac" >> /tmp/sysMENU/${settngs}.sh
 echo "esac" >> /tmp/sysMENU/${wine}.sh
 chmod +x /tmp/sysMENU/*.sh
-mainMENU
+mainMENU;
 }
 menuHeaderInsert(){
 x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ; # Variable set to number of lines filled in list.txt
@@ -116,36 +107,27 @@ preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
 comment=$(sed s/"Comment="//g <<< ${preComment})
 inputer=$(echo "$filename "\"$comment"\" \\")
 if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${accss}.sh
-fi
-if [[ "$catagory" == *"$dev"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${dev}.sh
-fi
-if [[ "$catagory" == *"$gme"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${gme}.sh
-fi
-if [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
-echo "$inputer" >> /tmp/sysMENU/${int}.sh
-fi
-if [[ "$catagory" == *"$graph"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${graph}.sh
-fi
-if [[ "$catagory" == *"$offce"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${offce}.sh
-fi
-if [[ "$catagory" == *"$media*" ]] \
-|| [[ "$catagory" == *"$vid"* ]] \
-|| [[ "$catagory" == *"$audio"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${media}.sh
-fi
-if [[ "$catagory" == *"$sys"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${sys}.sh
-fi
-if [[ "$catagory" == *"$settngs"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${settngs}.sh
-fi
-if [[ "$catagory" == *"$wine"* ]]; then
-echo "$inputer" >> /tmp/sysMENU/${wine}.sh
+		echo "$inputer" >> /tmp/sysMENU/${accss}.sh
+	elif [[ "$catagory" == *"$dev"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${dev}.sh
+	elif [[ "$catagory" == *"$gme"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${gme}.sh
+	elif [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
+		echo "$inputer" >> /tmp/sysMENU/${int}.sh
+	elif [[ "$catagory" == *"$graph"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${graph}.sh
+	elif [[ "$catagory" == *"$offce"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${offce}.sh
+	elif [[ "$catagory" == *"$media*" ]] \
+		|| [[ "$catagory" == *"$vid"* ]] \
+		|| [[ "$catagory" == *"$audio"* ]]; then
+			echo "$inputer" >> /tmp/sysMENU/${media}.sh
+	elif [[ "$catagory" == *"$sys"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${sys}.sh
+	elif [[ "$catagory" == *"$settngs"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${settngs}.sh
+	elif [[ "$catagory" == *"$wine"* ]]; then
+		echo "$inputer" >> /tmp/sysMENU/${wine}.sh
 fi
 i=$[$i++1];
 done
@@ -193,7 +175,7 @@ echo "$endMenuInsert" >> /tmp/sysMENU/${wine}.sh
 echo "$menuitmVar" >> /tmp/sysMENU/${wine}.sh
 echo "$preCMD" >> /tmp/sysMENU/${wine}.sh
 echo "$menuCall" >> /tmp/sysMENU/${wine}.sh
-commandInsert
+commandInsert;
 }
 startScan() {
 clear
@@ -212,9 +194,9 @@ sys="System"
 settngs="Settings"
 wine="Wine"
 mkdir /tmp/sysMENU
-touch /tmp/sysMENU/menu.list ;            			    # Creates a temp txt file called menu.list in the temp folder of root
-sed -i "d" /tmp/sysMENU/menu.list ;					        # Clears the file menu.list to rcv new info
-ls /usr/share/applications/ >> /tmp/sysMENU/menu.list ; # lists current dir files to menu.list
+touch /tmp/sysMENU/menu.list ;
+sed -i "d" /tmp/sysMENU/menu.list ;
+ls /usr/share/applications/ >> /tmp/sysMENU/menu.list ;
 header=$(echo "#!/bin/bash
 INPUT=/tmp/menu.txt
 dialog --clear --backtitle "\"Shellmen"\" \\
@@ -231,13 +213,13 @@ echo "$header" > /tmp/sysMENU/${media}.sh
 echo "$header" > /tmp/sysMENU/${sys}.sh
 echo "$header" > /tmp/sysMENU/${settngs}.sh
 echo "$header" > /tmp/sysMENU/${wine}.sh
-menuHeaderInsert
+menuHeaderInsert;
 }
 pre(){
 if [ -d /tmp/sysMENU/ ]; then
-mainMENU
+mainMENU;
 else
-startScan
+startScan;
 fi
 }
-pre
+pre;
