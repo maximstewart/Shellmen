@@ -30,33 +30,33 @@ fi
 mainMENU()
 {
 INPUT=/tmp/menu.txt
-dialog --clear --backtitle "Shellmen" \
---title "[ M A I N - M E N U ]" \
---menu "Please Select An Option" 16 50 15 \
-Accessories "General Programs" \
-System "Main System Programs" \
-Settings "Main System Settings" \
-Multimedia "Audio & Video Programs" \
-Graphics "Image Programs" \
-Games "Gaming Programs" \
-Office "Wordprocess & Documents Programs" \
-Development "Programing Programs" \
-Internet "Various Internet Related Programs" \
-Wine "Windows Exe & Program Support" 2>"${INPUT}"
-menuitem=$(<"${INPUT}")
-case $menuitem in
-	Accessories) bash /tmp/sysMENU/Accessories.sh ;;
-	System) bash /tmp/sysMENU/System.sh ;;
-	Settings) bash /tmp/sysMENU/Settings.sh ;;
-	Multimedia) bash /tmp/sysMENU/Multimedia.sh ;;
-	Graphics) bash /tmp/sysMENU/Graphics.sh ;;
-	Games) bash /tmp/sysMENU/Game.sh ;;
-	Office) bash /tmp/sysMENU/Office.sh ;;
-	Development) bash /tmp/sysMENU/Development.sh ;;
-	Internet) bash /tmp/sysMENU/Internet.sh ;;
-	Wine) bash /tmp/sysMENU/Wine.sh ;;
-	Exit) echo "Bye!"; break ;;
-esac
+    dialog --clear --backtitle "Shellmen" \
+    --title "[ M A I N - M E N U ]" \
+    --menu "Please Select An Option" 16 50 15 \
+    Accessories "General Programs" \
+    System "Main System Programs" \
+    Settings "Main System Settings" \
+    Multimedia "Audio & Video Programs" \
+    Graphics "Image Programs" \
+    Games "Gaming Programs" \
+    Office "Wordprocess & Documents Programs" \
+    Development "Programing Programs" \
+    Internet "Various Internet Related Programs" \
+    Wine "Windows Exe & Program Support" 2>"${INPUT}"
+    menuitem=$(<"${INPUT}")
+    case $menuitem in
+	    Accessories) bash /tmp/sysMENU/Accessories.sh ;;
+	    System) bash /tmp/sysMENU/System.sh ;;
+	    Settings) bash /tmp/sysMENU/Settings.sh ;;
+	    Multimedia) bash /tmp/sysMENU/Multimedia.sh ;;
+	    Graphics) bash /tmp/sysMENU/Graphics.sh ;;
+	    Games) bash /tmp/sysMENU/Game.sh ;;
+	    Office) bash /tmp/sysMENU/Office.sh ;;
+	    Development) bash /tmp/sysMENU/Development.sh ;;
+	    Internet) bash /tmp/sysMENU/Internet.sh ;;
+	    Wine) bash /tmp/sysMENU/Wine.sh ;;
+	    Exit) echo "Bye!"; break ;;
+    esac
 }
 
 startScan()
@@ -80,22 +80,23 @@ mkdir /tmp/sysMENU
 touch /tmp/sysMENU/menu.list ;
 sed -i "d" /tmp/sysMENU/menu.list ;
 ls /usr/share/applications/ >> /tmp/sysMENU/menu.list ;
+
 header=$(echo "#!/bin/bash
 INPUT=/tmp/menu.txt
 dialog --clear --backtitle "\"Shellmen"\" \\
 --title "\"[ S U B - M E N U ]"\" \\
 --menu "\"Please Select An Option"\" 15 50 10 \\
 Main_Menu "\"Goes To Main Menu"\" \\")
-echo "$header" > /tmp/sysMENU/${accss}.sh
-echo "$header" > /tmp/sysMENU/${dev}.sh
-echo "$header" > /tmp/sysMENU/${gme}.sh
-echo "$header" > /tmp/sysMENU/${int}.sh
-echo "$header" > /tmp/sysMENU/${graph}.sh
-echo "$header" > /tmp/sysMENU/${offce}.sh
-echo "$header" > /tmp/sysMENU/${media}.sh
-echo "$header" > /tmp/sysMENU/${sys}.sh
-echo "$header" > /tmp/sysMENU/${settngs}.sh
-echo "$header" > /tmp/sysMENU/${wine}.sh
+    echo "$header" > /tmp/sysMENU/${accss}.sh
+    echo "$header" > /tmp/sysMENU/${dev}.sh
+    echo "$header" > /tmp/sysMENU/${gme}.sh
+    echo "$header" > /tmp/sysMENU/${int}.sh
+    echo "$header" > /tmp/sysMENU/${graph}.sh
+    echo "$header" > /tmp/sysMENU/${offce}.sh
+    echo "$header" > /tmp/sysMENU/${media}.sh
+    echo "$header" > /tmp/sysMENU/${sys}.sh
+    echo "$header" > /tmp/sysMENU/${settngs}.sh
+    echo "$header" > /tmp/sysMENU/${wine}.sh
 menuHeaderInsert;
 }
 
@@ -103,37 +104,39 @@ menuHeaderInsert()
 {
 x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ; # Variable set to number of lines filled in list.txt
 i="1"
-while [ $i -le $x ]; do
-line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list); # Reads the number of lines in list.txt then sets as a variable counting up to variable x
-filename="${line1%.*}"
-execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
-catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
-preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
-comment=$(sed s/"Comment="//g <<< ${preComment})
-inputer=$(echo "$filename "\"$comment"\" \\")
-if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${accss}.sh
+
+    while [ $i -le $x ]; do
+ # Reads the number of lines in list.txt then sets as a variable counting up to variable x
+    line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list);
+    filename="${line1%.*}"
+    execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
+    catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
+    preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
+    comment=$(sed s/"Comment="//g <<< ${preComment})
+    inputer=$(echo "$filename "\"$comment"\" \\")
+    if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
+	    echo "$inputer" >> /tmp/sysMENU/${accss}.sh
 	elif [[ "$catagory" == *"$dev"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${dev}.sh
+		  echo "$inputer" >> /tmp/sysMENU/${dev}.sh
 	elif [[ "$catagory" == *"$gme"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${gme}.sh
+		  echo "$inputer" >> /tmp/sysMENU/${gme}.sh
 	elif [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
-		echo "$inputer" >> /tmp/sysMENU/${int}.sh
+		  echo "$inputer" >> /tmp/sysMENU/${int}.sh
 	elif [[ "$catagory" == *"$graph"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${graph}.sh
+		  echo "$inputer" >> /tmp/sysMENU/${graph}.sh
 	elif [[ "$catagory" == *"$offce"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${offce}.sh
+		  echo "$inputer" >> /tmp/sysMENU/${offce}.sh
 	elif [[ "$catagory" == *"$media*" ]] \
 		|| [[ "$catagory" == *"$vid"* ]] \
 		|| [[ "$catagory" == *"$audio"* ]]; then
 			echo "$inputer" >> /tmp/sysMENU/${media}.sh
 	elif [[ "$catagory" == *"$sys"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${sys}.sh
+		  echo "$inputer" >> /tmp/sysMENU/${sys}.sh
 	elif [[ "$catagory" == *"$settngs"* ]]; then
 		echo "$inputer" >> /tmp/sysMENU/${settngs}.sh
 	elif [[ "$catagory" == *"$wine"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/${wine}.sh
-fi
+		  echo "$inputer" >> /tmp/sysMENU/${wine}.sh
+    fi
 i=$[$i++1];
 done
 endMenuInsert=$(echo "2>"\"'${INPUT}'"\"")
@@ -187,36 +190,37 @@ commandInsert()
 {
 x=$(cat /tmp/sysMENU/menu.list | wc -l) >> /dev/null ;
 i="1"
-while [ $i -le $x ]; do
-line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list);
-filename="${line1%.*}"
-execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
-catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
-preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
-execCMD=$(echo "${filename}) exec ${filename} ;;")
-if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${accss}.sh
+
+    while [ $i -le $x ]; do
+    line1=$(sed -n "${i}p" /tmp/sysMENU/menu.list);
+    filename="${line1%.*}"
+    execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
+    catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
+    preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
+    execCMD=$(echo "${filename}) exec ${filename} ;;")
+    if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
+       echo "$execCMD" >> /tmp/sysMENU/${accss}.sh
 	elif [[ "$catagory" == *"$dev"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${dev}.sh
+		  echo "$execCMD" >> /tmp/sysMENU/${dev}.sh
 	elif [[ "$catagory" == *"$gme"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${gme}.sh
+		  echo "$execCMD" >> /tmp/sysMENU/${gme}.sh
 	elif [[ "$catagory" == *"$int"* ]] || [[ "$catagory" == *"$net"* ]] ; then
-		echo "$execCMD" >> /tmp/sysMENU/${int}.sh
+		  echo "$execCMD" >> /tmp/sysMENU/${int}.sh
 	elif [[ "$catagory" == *"$graph"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${graph}.sh
+		  echo "$execCMD" >> /tmp/sysMENU/${graph}.sh
 	elif [[ "$catagory" == *"$offce"* ]]; then
 		echo "$execCMD" >> /tmp/sysMENU/${offce}.sh
 	elif [[ "$catagory" == *"$media*" ]] \
 		|| [[ "$catagory" == *"$vid"* ]] \
 		|| [[ "$catagory" == *"$audio"* ]]; then
-			echo "$execCMD" >> /tmp/sysMENU/${media}.sh
+		   echo "$execCMD" >> /tmp/sysMENU/${media}.sh
 	elif [[ "$catagory" == *"$sys"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${sys}.sh
+		  echo "$execCMD" >> /tmp/sysMENU/${sys}.sh
 	elif [[ "$catagory" == *"$settngs"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${settngs}.sh
-elif [[ "$catagory" == *"$wine"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/${wine}.sh
-fi
+		  echo "$execCMD" >> /tmp/sysMENU/${settngs}.sh
+    elif [[ "$catagory" == *"$wine"* ]]; then
+		 echo "$execCMD" >> /tmp/sysMENU/${wine}.sh
+    fi
 i=$[$i++1];
 done	
 echo "esac" >> /tmp/sysMENU/${accss}.sh
