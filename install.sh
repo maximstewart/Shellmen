@@ -16,3 +16,33 @@ clear
     fi
 }
 main
+2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+Main_Menu) bash /bin/shellMen ;;
+esac
+2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+Main_Menu) bash /bin/shellMen ;;
+esac
+2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+Main_Menu) bash /bin/shellMen ;;
+esac
+2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+Main_Menu) bash /bin/shellMen ;;
+esac
+2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+Main_Menu) bash /bin/shellMen ;;
+esac
+2>"${INPUT}"
+menuitem=$(<"${INPUT}")
+case $menuitem in
+Main_Menu) bash /bin/shellMen ;;
+esac
