@@ -32,38 +32,6 @@ settngs="Settings" wine="Wine" pth="/tmp/sysMENU"
     fi
 }
 
-mainMENU()
-{
-INPUT=/tmp/menu.txt
-    dialog --clear --backtitle "Shellmen" \
-    --title "[ M A I N - M E N U ]" \
-    --menu "Please Select An Option" 16 50 15 \
-    Accessories "General Programs" \
-    System "Main System Programs" \
-    Settings "Main System Settings" \
-    Multimedia "Audio & Video Programs" \
-    Graphics "Image Programs" \
-    Games "Gaming Programs" \
-    Office "Wordprocess & Documents Programs" \
-    Development "Programing Programs" \
-    Internet "Various Internet Related Programs" \
-    Wine "Windows Exe & Program Support" 2>"${INPUT}"
-    menuitem=$(<"${INPUT}")
-    case $menuitem in
-	    Accessories) bash "${pth}"/Accessories.sh ;;
-	    System) bash "${pth}"/System.sh ;;
-	    Settings) bash "${pth}"/Settings.sh ;;
-	    Multimedia) bash "${pth}"/Multimedia.sh ;;
-	    Graphics) bash "${pth}"/Graphics.sh ;;
-	    Games) bash "${pth}"/Game.sh ;;
-	    Office) bash "${pth}"/Office.sh ;;
-	    Development) bash "${pth}"/Development.sh ;;
-	    Internet) bash "${pth}"/Internet.sh ;;
-	    Wine) bash "${pth}"/Wine.sh ;;
-	    Exit) echo "Bye!"; break ;;
-    esac
-}
-
 startScan()
 {
 clear
@@ -150,7 +118,7 @@ i="1"
     execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
     catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
     preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
-    execCMD=$(echo "${filename}) exec ${filename} ;;")
+    execCMD=$(echo "${filename}) ""${filename} %f 2&>1 /dev/null"" & shellMen ;;")
     if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
              echo "$execCMD" >> "${pth}"/${accss}.sh
 	   elif [[ "$catagory" == *"$dev"* ]]; then
@@ -179,5 +147,37 @@ done
     echo "esac" | tee -a "${pth}"/*.sh
     chmod +x "${pth}"/*.sh
     mainMENU;
+}
+
+mainMENU()
+{
+INPUT=/tmp/menu.txt
+    dialog --clear --backtitle "Shellmen" \
+    --title "[ M A I N - M E N U ]" \
+    --menu "Please Select An Option" 16 50 15 \
+    Accessories "General Programs" \
+    System "Main System Programs" \
+    Settings "Main System Settings" \
+    Multimedia "Audio & Video Programs" \
+    Graphics "Image Programs" \
+    Games "Gaming Programs" \
+    Office "Wordprocess & Documents Programs" \
+    Development "Programing Programs" \
+    Internet "Various Internet Related Programs" \
+    Wine "Windows Exe & Program Support" 2>"${INPUT}"
+    menuitem=$(<"${INPUT}")
+    case $menuitem in
+	    Accessories) bash "${pth}"/Accessories.sh ;;
+	    System) bash "${pth}"/System.sh ;;
+	    Settings) bash "${pth}"/Settings.sh ;;
+	    Multimedia) bash "${pth}"/Multimedia.sh ;;
+	    Graphics) bash "${pth}"/Graphics.sh ;;
+	    Games) bash "${pth}"/Game.sh ;;
+	    Office) bash "${pth}"/Office.sh ;;
+	    Development) bash "${pth}"/Development.sh ;;
+	    Internet) bash "${pth}"/Internet.sh ;;
+	    Wine) bash "${pth}"/Wine.sh ;;
+	    Exit) echo "Bye!"; break ;;
+    esac
 }
 pre;
