@@ -118,7 +118,7 @@ i="1"
     execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
     catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
     preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
-    execCMD=$(echo "${filename}) ""${filename} %f 2&>1 /dev/null"" & shellMen ;;")
+    execCMD=$(echo "${filename}) ${filename} & shellMen ;;")
     if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
              echo "$execCMD" >> "${pth}"/${accss}.sh
 	   elif [[ "$catagory" == *"$dev"* ]]; then
