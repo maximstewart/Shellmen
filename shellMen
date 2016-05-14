@@ -116,7 +116,7 @@ i="1"
     line1=$(sed -n "${i}p" "${pth}"/menu.list);
     filename="${line1%.*}"
     execMethod=$(grep -A 0 -m2 "Exec=" /usr/share/applications/"$line1" | tail -n1)
-    execMethod=$(echo ${execMethod} | sed s/Exec=//g | sed s/%f//g)
+    execMethod=$(echo ${execMethod} | sed s/Exec=//g | sed s/%f//g | sed s/Try//g)
     catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
     preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
     execCMD=$(echo "${filename}) ${execMethod} & shellMen ;;")
