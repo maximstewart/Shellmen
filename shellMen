@@ -115,10 +115,11 @@ i="1"
     while [ $i -le $x ]; do
     line1=$(sed -n "${i}p" "${pth}"/menu.list);
     filename="${line1%.*}"
-    execMethod=$(grep -A 0 "Exec=" /usr/share/applications/"$line1")
+    execMethod=$(grep -A 0 -m2 "Exec=" /usr/share/applications/"$line1" | tail -n1)
+    execMethod=$(echo ${execMethod} | sed s/Exec=//g | sed s/%f//g)
     catagory=$(grep -A 0 "Categories=" /usr/share/applications/"$line1")
     preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
-    execCMD=$(echo "${filename}) ${filename} & shellMen ;;")
+    execCMD=$(echo "${filename}) ${execMethod} & shellMen ;;")
     if [[ "$catagory" == *"$accss"* ]] || [[ "$catagory" == *"$util"* ]]; then
              echo "$execCMD" >> "${pth}"/${accss}.sh
 	   elif [[ "$catagory" == *"$dev"* ]]; then
