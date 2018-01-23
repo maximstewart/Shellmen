@@ -4,7 +4,7 @@ Shellmen is short for ShellMenu and is intended to be a functional menu for term
 # To Install
 To install automatically please run the install.sh file and select option 2.
 You will need to make it exacutable.
-
+<br/>
 To Install manually:
 <pre>
 sudo cp shellMen.sh /bin/
