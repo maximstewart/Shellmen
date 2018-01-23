@@ -17,7 +17,4 @@ To Uninstall:
 sudo rm /bin/shellMen
 </pre>
 # License
-<pre>
-You should have received a copy of the GNU General Public License <br>
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-</pre>
+You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
