@@ -12,9 +12,9 @@ sudo chown root:root /bin/shellMen
 sudo chmod 744 /bin/shellMen
 </pre>
 # To Uninstall
-To install automatically please run the install.sh file and select option 2.
+To uninstall automatically please run the install.sh file and select option 2.
 <br/>
-To Install manually:
+To Uninstall manually:
 <pre>
 sudo rm /bin/shellMen
 </pre>
