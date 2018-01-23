@@ -6,14 +6,13 @@ To install automatically please run the install.sh file
 You will need to make it exacutable.
 
 To Install manually:
-Type out these commands into a terminal--
 <pre>
 sudo cp shellMen.sh /bin/
 sudo chown root:root /bin/shellMen
-sudo chmod +x /bin/shellMen
+sudo chmod 744 /bin/shellMen
 </pre>
 # To Uninstall
-To Uninstall manually: Type out these commands into a terminal--
+To Uninstall:
 <pre>
 sudo rm /bin/shellMen
 </pre>
