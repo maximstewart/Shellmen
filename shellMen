@@ -66,39 +66,18 @@ while [ $i -le $x ]; do
     preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
     execCMD=$(echo "${filename}) exec ${filename} ;;")
 
-    if [[ "$catagory" == *"${menu[0]}"* ]] || [[ "$catagory" == *"${menu[1]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[0]}".sh
-    elif [[ "$catagory" == *"${menu[2]}"* ]] \
-            || [[ "$catagory" == *"${menu[3]}"* ]] \
-            || [[ "$catagory" == *"${menu[4]}"* ]]; then
-                echo "$execCMD" >> /tmp/sysMENU/"${menu[2]}".sh
-    elif [[ "$catagory" == *"${menu[5]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[5]}".sh
-    elif [[ "$catagory" == *"${menu[6]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[6]}".sh
-    elif [[ "$catagory" == *"${menu[7]}"* ]] || [[ "$catagory" == *"${menu[8]}"* ]] ; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[7]}".sh
-    elif [[ "$catagory" == *"${menu[9]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[8]}".sh
-    elif [[ "$catagory" == *"${menu[10]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[10]}".sh
-    elif [[ "$catagory" == *"${menu[11]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[11]}".sh
-    elif [[ "$catagory" == *"${menu[12]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[12]}".sh
-    elif [[ "$catagory" == *"${menu[13]}"* ]]; then
-        echo "$execCMD" >> /tmp/sysMENU/"${menu[13]}".sh
-    fi
+    writeToPath "$catagory" "$execCMD"
+
 i=$[$i++1];
 done
 
 for opt in "${menu[@]}"; do
-    if [[ opt == "${menu[8]}" ]]; then
-        opt = ${menu[7]}
+    if [[ $opt == "${menu[8]}" ]]; then
+        opt=${menu[7]}
     fi
 
-    if [[ opt == "${menu[3]}" || opt == "${menu[4]}" ]]; then
-        opt = ${menu[2]}
+    if [[ $opt == "${menu[3]}" || $opt == "${menu[4]}" ]]; then
+        opt=${menu[2]}
     fi
     echo "esac" >> /tmp/sysMENU/"${opt}".sh
 done
@@ -119,6 +98,40 @@ while [ $i -le $x ]; do
     preComment=$(grep -A 0 "Comment=" /usr/share/applications/"$line1")
     comment=$(sed s/"Comment="//g <<< ${preComment})
     inputer=$(echo "$filename "\"$comment"\" \\")
+
+    writeToPath "$catagory" "$inputer"
+
+i=$[$i++1];
+done
+
+endMenuInsert=$(echo "2>"\"'${INPUT}'"\"")
+menuitmVar=$(echo 'menuitem=$(<"${INPUT}")')
+preCMD=$(echo "case \$menuitem in")
+menuCall=$(echo "Main_Menu) bash /bin/shellMen ;;")
+
+
+for opt in "${menu[@]}"; do
+    if [[ $opt == "${menu[8]}" ]]; then
+        opt=${menu[7]}
+    fi
+
+    if [[ $opt == "${menu[3]}" || $opt == "${menu[4]}" ]]; then
+        opt=${menu[2]}
+    fi
+
+    echo "$endMenuInsert" >> /tmp/sysMENU/"${opt}".sh
+    echo "$menuitmVar" >> /tmp/sysMENU/"${opt}".sh
+    echo "$preCMD" >> /tmp/sysMENU/"${opt}".sh
+    echo "$menuCall" >> /tmp/sysMENU/"${opt}".sh
+done
+
+commandInsert;
+}
+
+function writeToPath() {
+    catagory=$1
+    inputer=$2
+
 
     if [[ "$catagory" == *"${menu[0]}"* ]] || [[ "$catagory" == *"${menu[1]}"* ]]; then
         echo "$inputer" >> /tmp/sysMENU/"${menu[0]}".sh
@@ -143,32 +156,8 @@ while [ $i -le $x ]; do
     elif [[ "$catagory" == *"${menu[13]}"* ]]; then
         echo "$inputer" >> /tmp/sysMENU/"${menu[13]}".sh
     fi
-i=$[$i++1];
-done
-
-endMenuInsert=$(echo "2>"\"'${INPUT}'"\"")
-menuitmVar=$(echo 'menuitem=$(<"${INPUT}")')
-preCMD=$(echo "case \$menuitem in")
-menuCall=$(echo "Main_Menu) bash /bin/shellMen ;;")
-
-
-for opt in "${menu[@]}"; do
-    if [[ opt == "${menu[8]}" ]]; then
-        opt = ${menu[7]}
-    fi
-
-    if [[ opt == "${menu[3]}" || opt == "${menu[4]}" ]]; then
-        opt = ${menu[2]}
-    fi
-
-    echo "$endMenuInsert" >> /tmp/sysMENU/"${opt}".sh
-    echo "$menuitmVar" >> /tmp/sysMENU/"${opt}".sh
-    echo "$preCMD" >> /tmp/sysMENU/"${opt}".sh
-    echo "$menuCall" >> /tmp/sysMENU/"${opt}".sh
-done
-
-commandInsert;
 }
+
 
 startScan() {
 clear
@@ -185,12 +174,12 @@ dialog --clear --backtitle "Shellmen" \
 Main_Menu "Goes To Main Menu" \'''
 
 for opt in "${menu[@]}"; do
-    if [[ opt == "${menu[8]}" ]]; then
-        opt = ${menu[7]}
+    if [[ $opt == "${menu[8]}" ]]; then
+        opt=${menu[7]}
     fi
 
-    if [[ opt == "${menu[3]}" || opt == "${menu[4]}" ]]; then
-        opt = ${menu[2]}
+    if [[ $opt == "${menu[3]}" || $opt == "${menu[4]}" ]]; then
+        opt=${menu[2]}
     fi
     echo "$header" > /tmp/sysMENU/"${opt}".sh
 done
