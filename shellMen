@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Maxim F. Stewart
-# Contact: [maxim2131@gmail.com] OR [gamer1119@gmail.com]
+# Contact: [1itdominator@gmail.com]
 #
 # Copyright 2013 Maxim F. Stewart
 #    This program is free software: you can redistribute it and/or modify
@@ -67,11 +67,11 @@ while [ $i -le $x ]; do
     execCMD=$(echo "${filename}) exec ${filename} ;;")
 
     if [[ "$catagory" == *"${menu[0]}"* ]] || [[ "$catagory" == *"${menu[1]}"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/"${menu[0]}".sh
-	elif [[ "$catagory" == *"${menu[2]}"* ]] \
-		|| [[ "$catagory" == *"${menu[3]}"* ]] \
-		|| [[ "$catagory" == *"${menu[4]}"* ]]; then
-			echo "$execCMD" >> /tmp/sysMENU/"${menu[2]}".sh
+        echo "$execCMD" >> /tmp/sysMENU/"${menu[0]}".sh
+    elif [[ "$catagory" == *"${menu[2]}"* ]] \
+            || [[ "$catagory" == *"${menu[3]}"* ]] \
+            || [[ "$catagory" == *"${menu[4]}"* ]]; then
+                echo "$execCMD" >> /tmp/sysMENU/"${menu[2]}".sh
     elif [[ "$catagory" == *"${menu[5]}"* ]]; then
         echo "$execCMD" >> /tmp/sysMENU/"${menu[5]}".sh
     elif [[ "$catagory" == *"${menu[6]}"* ]]; then
@@ -79,15 +79,15 @@ while [ $i -le $x ]; do
     elif [[ "$catagory" == *"${menu[7]}"* ]] || [[ "$catagory" == *"${menu[8]}"* ]] ; then
         echo "$execCMD" >> /tmp/sysMENU/"${menu[7]}".sh
     elif [[ "$catagory" == *"${menu[9]}"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/"${menu[8]}".sh
-	elif [[ "$catagory" == *"${menu[10]}"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/"${menu[10]}".sh
-	elif [[ "$catagory" == *"${menu[11]}"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/"${menu[11]}".sh
-	elif [[ "$catagory" == *"${menu[12]}"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/"${menu[12]}".sh
+        echo "$execCMD" >> /tmp/sysMENU/"${menu[8]}".sh
+    elif [[ "$catagory" == *"${menu[10]}"* ]]; then
+        echo "$execCMD" >> /tmp/sysMENU/"${menu[10]}".sh
+    elif [[ "$catagory" == *"${menu[11]}"* ]]; then
+        echo "$execCMD" >> /tmp/sysMENU/"${menu[11]}".sh
+    elif [[ "$catagory" == *"${menu[12]}"* ]]; then
+        echo "$execCMD" >> /tmp/sysMENU/"${menu[12]}".sh
     elif [[ "$catagory" == *"${menu[13]}"* ]]; then
-		echo "$execCMD" >> /tmp/sysMENU/"${menu[13]}".sh
+        echo "$execCMD" >> /tmp/sysMENU/"${menu[13]}".sh
     fi
 i=$[$i++1];
 done
@@ -121,27 +121,27 @@ while [ $i -le $x ]; do
     inputer=$(echo "$filename "\"$comment"\" \\")
 
     if [[ "$catagory" == *"${menu[0]}"* ]] || [[ "$catagory" == *"${menu[1]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[0]}".sh
-	elif [[ "$catagory" == *"${menu[2]}*" ]] \
-		|| [[ "$catagory" == *"${menu[3]}"* ]] \
-		|| [[ "$catagory" == *"${menu[4]}"* ]]; then
-			echo "$inputer" >> /tmp/sysMENU/"${menu[2]}".sh
+        echo "$inputer" >> /tmp/sysMENU/"${menu[0]}".sh
+    elif [[ "$catagory" == *"${menu[2]}*" ]] \
+            || [[ "$catagory" == *"${menu[3]}"* ]] \
+	    || [[ "$catagory" == *"${menu[4]}"* ]]; then
+	        echo "$inputer" >> /tmp/sysMENU/"${menu[2]}".sh
     elif [[ "$catagory" == *"${menu[5]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[5]}".sh
-	elif [[ "$catagory" == *"${menu[6]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[6]}".sh
+        echo "$inputer" >> /tmp/sysMENU/"${menu[5]}".sh
+    elif [[ "$catagory" == *"${menu[6]}"* ]]; then
+        echo "$inputer" >> /tmp/sysMENU/"${menu[6]}".sh
     elif [[ "$catagory" == *"${menu[7]}"* ]] || [[ "$catagory" == *"${menu[8]}"* ]] ; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[7]}".sh
+        echo "$inputer" >> /tmp/sysMENU/"${menu[7]}".sh
     elif [[ "$catagory" == *"${menu[9]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[9]}".sh
+        echo "$inputer" >> /tmp/sysMENU/"${menu[9]}".sh
     elif [[ "$catagory" == *"${menu[10]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[10]}".sh
-	elif [[ "$catagory" == *"${menu[11]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[11]}".sh
-	elif [[ "$catagory" == *"${menu[12]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[12]}".sh
-	elif [[ "$catagory" == *"${menu[13]}"* ]]; then
-		echo "$inputer" >> /tmp/sysMENU/"${menu[13]}".sh
+        echo "$inputer" >> /tmp/sysMENU/"${menu[10]}".sh
+    elif [[ "$catagory" == *"${menu[11]}"* ]]; then
+        echo "$inputer" >> /tmp/sysMENU/"${menu[11]}".sh
+    elif [[ "$catagory" == *"${menu[12]}"* ]]; then
+        echo "$inputer" >> /tmp/sysMENU/"${menu[12]}".sh
+    elif [[ "$catagory" == *"${menu[13]}"* ]]; then
+        echo "$inputer" >> /tmp/sysMENU/"${menu[13]}".sh
     fi
 i=$[$i++1];
 done
