@@ -27,8 +27,9 @@ class Main(Context):
         while True:
             self.clear()
             if not self.menuData:
-                path          = "/usr/share/applications/"
-                self.menuData = self.getDesktopFilesInfo(path)
+                HOME  = os.path.expanduser('~') + "/.local/share/applications/"
+                paths = ["/usr/share/applications/", HOME]
+                self.menuData = self.getDesktopFilesInfo(paths)
 
             group = self.call_method("mainMenu")["group"]
             query = ""
@@ -51,7 +52,7 @@ class Main(Context):
         return method(data) if data else method()
 
 
-    def getDesktopFilesInfo(self, path):
+    def getDesktopFilesInfo(self, paths):
         menuObjs = {
             "Accessories": [],
             "Multimedia": [],
@@ -66,47 +67,48 @@ class Main(Context):
             "Other": []
         }
 
+        for path in paths:
+            for f in listdir(path):
+                fPath = path + f
+                flags = ["mimeinfo.cache", "defaults.list"]
+                if not f in flags and isfile(fPath):
+                    xdgObj = DesktopEntry(fPath)
 
-        for f in listdir(path):
-            fPath = path + f
-            flags = ["mimeinfo.cache", "defaults.list"]
-            if not f in flags and isfile(fPath):
-                xdgObj = DesktopEntry(fPath)
+                    title    = xdgObj.getName()
+                    groups   = xdgObj.getCategories()
+                    comment  = xdgObj.getComment()
+                    # icon     = xdgObj.getIcon()
+                    mainExec = xdgObj.getExec()
+                    tryExec  = xdgObj.getTryExec()
 
-                title    = xdgObj.getName()
-                groups   = xdgObj.getCategories()
-                comment  = xdgObj.getComment()
-                # icon     = xdgObj.getIcon()
-                mainExec = xdgObj.getExec()
-                tryExec  = xdgObj.getTryExec()
+                    group    = ""
+                    if "Accessories" in groups or "Utility" in groups:
+                        group = "Accessories"
+                    elif "Multimedia" in groups or "Video" in groups or "Audio" in groups:
+                        group = "Multimedia"
+                    elif "Development" in groups:
+                        group = "Development"
+                    elif "Game" in groups:
+                        group = "Game"
+                    elif "Internet" in groups or "Network" in groups:
+                        group = "Internet"
+                    elif "Graphics" in groups:
+                        group = "Graphics"
+                    elif "Office" in groups:
+                        group = "Office"
+                    elif "System" in groups:
+                        group = "System"
+                    elif "Settings" in groups:
+                        group = "Settings"
+                    elif "Wine" in groups:
+                        group = "Wine"
+                    else:
+                        group = "Other"
 
-                group    = ""
-                if "Accessories" in groups or "Utility" in groups:
-                    group = "Accessories"
-                elif "Multimedia" in groups or "Video" in groups or "Audio" in groups:
-                    group = "Multimedia"
-                elif "Development" in groups:
-                    group = "Development"
-                elif "Game" in groups:
-                    group = "Game"
-                elif "Internet" in groups or "Network" in groups:
-                    group = "Internet"
-                elif "Graphics" in groups:
-                    group = "Graphics"
-                elif "Office" in groups:
-                    group = "Office"
-                elif "System" in groups:
-                    group = "System"
-                elif "Settings" in groups:
-                    group = "Settings"
-                elif "Wine" in groups:
-                    group = "Wine"
-                else:
-                    group = "Other"
-
-                menuObjs[group].append( {"title": title, "groups": groups,
-                                    "comment": comment, "exec": mainExec,
-                                    "tryExec": tryExec, "fileName": f} )
+                    menuObjs[group].append( {"title":  title,   "groups": groups,
+                                            "comment": comment, "exec": mainExec,
+                                            "tryExec": tryExec, "fileName": f
+                                            })
 
         return menuObjs
 

@@ -16,8 +16,8 @@ from .mixins import StylesMixin
 
 
 GROUPS = ["[ Search ]", "Accessories", "Multimedia", "Graphics", "Game",
-            "Office", "Development", "Internet", "Settings",
-            "System", "Wine", "Other", "[ Exit ]"]
+            "Office", "Development", "Internet", "Settings", "System",
+            "Wine", "Other", "[ Exit ]"]
 
 
 class Context(StylesMixin):
