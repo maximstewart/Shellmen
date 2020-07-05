@@ -73,7 +73,7 @@ class Main(Context):
             else:
                 for folder in listdir(path):
                     try:
-                        fPath = path + folder
+                        fPath = path + folder + "/"
                         self.listAndUpdateDesktopFiles(fPath, menuObjs);
                     except Exception as e:
                         self.logger.debug(e)
@@ -83,8 +83,7 @@ class Main(Context):
     def listAndUpdateDesktopFiles(self, path, menuObjs):
         for f in listdir(path):
             fPath = path + f
-            flags = ["mimeinfo.cache", "defaults.list"]
-            if not f in flags and isfile(fPath):
+            if isfile(fPath) and f.endswith(".desktop"):
                 xdgObj = DesktopEntry(fPath)
 
                 title    = xdgObj.getName()
@@ -122,6 +121,7 @@ class Main(Context):
                                         "comment": comment, "exec": mainExec,
                                         "tryExec": tryExec, "fileName": f
                                         })
+
 
 
 
