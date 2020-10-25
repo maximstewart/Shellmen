@@ -30,6 +30,7 @@ class Logger:
         chLogLevel   = logging.CRITICAL # Prety musch the only one we change ever
         fhLogLevel   = logging.DEBUG
         log          = logging.getLogger(loggerName)
+        log.setLevel(globalLogLvl)
 
         # Set our log output styles
         fFormatter   = logging.Formatter('[%(asctime)s] %(pathname)s:%(lineno)d %(levelname)s - %(message)s', '%m-%d %H:%M:%S')

@@ -23,16 +23,16 @@ class Main(Context):
             Initialize it all...
         """
         super().__init__(args)
+        HOME_APPS  = os.path.expanduser('~') + "/.local/share/applications/"
+        paths      = ["/opt/", "/usr/share/applications/", HOME_APPS]
+        query      = ""
 
         while True:
             self.clear()
             if not self.menuData:
-                HOME  = os.path.expanduser('~') + "/.local/share/applications/"
-                paths = ["/usr/share/applications/", HOME]
                 self.menuData = self.getDesktopFilesInfo(paths)
 
             group = self.call_method("mainMenu")["group"]
-            query = ""
             if "[ Search ]" in group:
                 query = self.call_method("searchMenu")["query"]
             if "[ Exit ]" in group:
@@ -68,69 +68,75 @@ class Main(Context):
         }
 
         for path in paths:
-            for f in listdir(path):
-                fPath = path + f
-                flags = ["mimeinfo.cache", "defaults.list"]
-                if not f in flags and isfile(fPath):
-                    xdgObj = DesktopEntry(fPath)
-
-                    title    = xdgObj.getName()
-                    groups   = xdgObj.getCategories()
-                    comment  = xdgObj.getComment()
-                    # icon     = xdgObj.getIcon()
-                    mainExec = xdgObj.getExec()
-                    tryExec  = xdgObj.getTryExec()
-
-                    group    = ""
-                    if "Accessories" in groups or "Utility" in groups:
-                        group = "Accessories"
-                    elif "Multimedia" in groups or "Video" in groups or "Audio" in groups:
-                        group = "Multimedia"
-                    elif "Development" in groups:
-                        group = "Development"
-                    elif "Game" in groups:
-                        group = "Game"
-                    elif "Internet" in groups or "Network" in groups:
-                        group = "Internet"
-                    elif "Graphics" in groups:
-                        group = "Graphics"
-                    elif "Office" in groups:
-                        group = "Office"
-                    elif "System" in groups:
-                        group = "System"
-                    elif "Settings" in groups:
-                        group = "Settings"
-                    elif "Wine" in groups:
-                        group = "Wine"
-                    else:
-                        group = "Other"
-
-                    menuObjs[group].append( {"title":  title,   "groups": groups,
-                                            "comment": comment, "exec": mainExec,
-                                            "tryExec": tryExec, "fileName": f
-                                            })
+            if not "/opt/" in path:
+                self.listAndUpdateDesktopFiles(path, menuObjs);
+            else:
+                for folder in listdir(path):
+                    try:
+                        fPath = path + folder + "/"
+                        self.listAndUpdateDesktopFiles(fPath, menuObjs);
+                    except Exception as e:
+                        self.logger.debug(e)
 
         return menuObjs
 
+    def listAndUpdateDesktopFiles(self, path, menuObjs):
+        for f in listdir(path):
+            fPath = path + f
+            if isfile(fPath) and f.endswith(".desktop"):
+                xdgObj = DesktopEntry(fPath)
+
+                title    = xdgObj.getName()
+                groups   = xdgObj.getCategories()
+                comment  = xdgObj.getComment()
+                # icon     = xdgObj.getIcon()
+                mainExec = xdgObj.getExec()
+                tryExec  = xdgObj.getTryExec()
+
+                group    = ""
+                if "Accessories" in groups or "Utility" in groups:
+                    group = "Accessories"
+                elif "Multimedia" in groups or "Video" in groups or "Audio" in groups:
+                    group = "Multimedia"
+                elif "Development" in groups:
+                    group = "Development"
+                elif "Game" in groups:
+                    group = "Game"
+                elif "Internet" in groups or "Network" in groups:
+                    group = "Internet"
+                elif "Graphics" in groups:
+                    group = "Graphics"
+                elif "Office" in groups:
+                    group = "Office"
+                elif "System" in groups:
+                    group = "System"
+                elif "Settings" in groups:
+                    group = "Settings"
+                elif "Wine" in groups:
+                    group = "Wine"
+                else:
+                    group = "Other"
+
+                menuObjs[group].append( {"title":  title,   "groups": groups,
+                                        "comment": comment, "exec": mainExec,
+                                        "tryExec": tryExec, "fileName": f
+                                        })
+
+
+
 
     def getSubgroup(self, group, query = ""):
-        """
-            Need to refactor and pull out the sub logic that is used in both cases...
-        """
         desktopObjs = []
         if "[ Search ]" in group:
             gkeys = self.menuData.keys()
             for gkey in gkeys:
                 for opt in self.menuData[gkey]:
                     keys = opt.keys()
-
                     if "comment" in keys and len(opt["comment"]) > 0 :
                         if query.lower() in opt["comment"].lower():
                             desktopObjs.append( opt["title"] + " || " + opt["comment"] )
                             continue
-
-                    if query.lower() in opt["title"].lower() or \
-                        query.lower() in opt["fileName"].lower():
+                    if query.lower() in opt["title"].lower() or query.lower() in opt["fileName"].lower():
                             desktopObjs.append( opt["title"] + " || " + opt["fileName"].replace(".desktop", "") )
         else:
             for opt in self.menuData[group]:
@@ -144,9 +150,6 @@ class Main(Context):
 
 
     def executeProgram(self, group, entry):
-        """
-            Need to refactor and pull out the sub loop that is used in both cases...
-        """
         parts   = entry.split("||")
         program = parts[0].strip()
         comment = parts[1].strip()
@@ -154,51 +157,31 @@ class Main(Context):
         if "[ Search ]" in group:
             gkeys = self.menuData.keys()
             for gkey in gkeys:
-                for opt in self.menuData[gkey]:
-                    if program in opt["title"]:
-                        keys = opt.keys()
-                        if comment in opt["comment"] or comment in opt["fileName"]:
-                            DEVNULL = open(os.devnull, 'w')
-                            execFailed = False
-                            try:
-                                command = opt["tryExec"].split("%")[0]
-                                self.logger.debug(command)
-                                subprocess.Popen(command.split(), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
-                                break
-                            except Exception as e:
-                                execFailed = True
-
-                            if execFailed:
-                                try:
-                                    if "exec" in keys and len(opt["exec"]):
-                                        command  = opt["exec"].split("%")[0]
-                                        self.logger.debug(command)
-                                        subprocess.Popen(command.split(), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
-                                        break
-                                except Exception as e:
-                                    self.logger.debug(e)
+                self.pre_execute(self.menuData[gkey], program, comment)
         else:
-            for opt in self.menuData[group]:
-                if program in opt["title"]:
-                    keys = opt.keys()
-                    if comment in opt["comment"] or comment in opt["fileName"]:
-                        DEVNULL = open(os.devnull, 'w')
-                        execFailed = False
-                        try:
-                            command = opt["tryExec"].split("%")[0]
-                            self.logger.debug(command)
-                            subprocess.Popen(command.split(), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
-                        except Exception as e:
-                            execFailed = True
+            self.pre_execute(self.menuData[group], program, comment)
 
-                        if execFailed:
-                            try:
-                                if "exec" in keys and len(opt["exec"]):
-                                    command  = opt["exec"].split("%")[0]
-                                    self.logger.debug(command)
-                                    subprocess.Popen(command.split(), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
-                            except Exception as e:
-                                self.logger.debug(e)
+
+    def pre_execute(self, options, program, comment):
+        for opt in options:
+            if program in opt["title"]:
+                keys = opt.keys()
+                if comment in opt["comment"] or comment in opt["fileName"]:
+                    try:
+                        self.execute(opt["tryExec"])
+                    except Exception as e:
+                        try:
+                            if "exec" in keys and len(opt["exec"]):
+                                self.execute(opt["exec"])
+                        except Exception as e:
+                            self.logger.debug(e)
+
+
+    def execute(self, option):
+        DEVNULL = open(os.devnull, 'w')
+        command = option.split("%")[0]
+        self.logger.debug(command)
+        subprocess.Popen(command.split(), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
 
 
     def clear(self):
