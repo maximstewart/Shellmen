@@ -8,8 +8,6 @@ from os import listdir
 # Gtk imports
 from xdg.DesktopEntry import DesktopEntry
 
-
-
 # Application imports
 from core import Context
 
@@ -23,27 +21,31 @@ class Main(Context):
             Initialize it all...
         """
         super().__init__(args)
-        HOME_APPS  = os.path.expanduser('~') + "/.local/share/applications/"
-        paths      = ["/opt/", "/usr/share/applications/", HOME_APPS]
-        query      = ""
+        HOME_APPS     = os.path.expanduser('~') + "/.local/share/applications/"
+        paths         = ["/opt/", "/usr/share/applications/", HOME_APPS]
+        self.menuData = self.getDesktopFilesInfo(paths)
+        baseOptions   = ["[  TO MAIN MENU  ]", "[ Favorites ]"]
+        query         = ""
 
         while True:
-            self.clear()
-            if not self.menuData:
-                self.menuData = self.getDesktopFilesInfo(paths)
+            try:
+                self.clear()
+                group = self.call_method("mainMenu")["group"]
+                if "Search..." in group:
+                    query = self.call_method("searchMenu")["query"]
+                if "Favorites" in group:
+                    query = self.call_method("favoritesMenu")["faves"]
+                if "[ Exit ]" in group:
+                    break
 
-            group = self.call_method("mainMenu")["group"]
-            if "[ Search ]" in group:
-                query = self.call_method("searchMenu")["query"]
-            if "[ Exit ]" in group:
-                break
-
-            self.clear()
-            progsList = ["[  TO MAIN MENU  ]"]
-            progsList += self.getSubgroup(group, query)
-            entry     = self.call_method("subMenu", [group, progsList])["prog"]
-            if not "[  TO MAIN MENU  ]" is entry:
-                self.executeProgram(group, entry)
+                self.clear()
+                progsList = ["[  TO MAIN MENU  ]"]
+                progsList += self.getSubgroup(group, query)
+                entry     = self.call_method("subMenu", [group, progsList])["prog"]
+                if entry not in baseOptions:
+                    self.executeProgram(group, entry)
+            except Exception as e:
+                pass
 
 
     def call_method(self, method_name, data = None):
@@ -123,11 +125,9 @@ class Main(Context):
                                         })
 
 
-
-
     def getSubgroup(self, group, query = ""):
         desktopObjs = []
-        if "[ Search ]" in group:
+        if "Search..." in group:
             gkeys = self.menuData.keys()
             for gkey in gkeys:
                 for opt in self.menuData[gkey]:
@@ -135,9 +135,10 @@ class Main(Context):
                     if "comment" in keys and len(opt["comment"]) > 0 :
                         if query.lower() in opt["comment"].lower():
                             desktopObjs.append( opt["title"] + " || " + opt["comment"] )
-                            continue
                     if query.lower() in opt["title"].lower() or query.lower() in opt["fileName"].lower():
                             desktopObjs.append( opt["title"] + " || " + opt["fileName"].replace(".desktop", "") )
+        elif "Favorites" in group:
+            pass
         else:
             for opt in self.menuData[group]:
                 keys = opt.keys()

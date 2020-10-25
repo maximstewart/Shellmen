@@ -15,9 +15,10 @@ from .mixins import StylesMixin
 
 
 
-GROUPS = ["[ Search ]", "Accessories", "Multimedia", "Graphics", "Game",
-            "Office", "Development", "Internet", "Settings", "System",
-            "Wine", "Other", "[ Exit ]"]
+GROUPS = [ "Favorites", "Accessories", "Multimedia", "Graphics", "Office",
+            "Development", "Internet", "Settings", "System", "Game", "Wine",
+            "Other", "Search...", "[ Exit ]"
+        ]
 
 
 class Context(StylesMixin):
@@ -50,6 +51,17 @@ class Context(StylesMixin):
             }
 
         return prompt(menu, style=self.theme)
+
+
+    def favoritesMenu(self, _grouplist = None):
+        grouplist = GROUPS if not _grouplist else _grouplist
+        menu = {
+                'type': 'list',
+                'name': 'faves',
+                'message': '[  Favorites  ]',
+                'choices': grouplist
+            }
+
 
     def subMenu(self, data = ["NO GROUP NAME", "NO PROGRAMS PASSED IN"]):
         group    = data[0]
