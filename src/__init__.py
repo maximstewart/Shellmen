@@ -23,29 +23,34 @@ class Main(Context):
         super().__init__(args)
         HOME_APPS     = os.path.expanduser('~') + "/.local/share/applications/"
         paths         = ["/opt/", "/usr/share/applications/", HOME_APPS]
+        baseOptions   = ["[  TO MAIN MENU  ]", "Favorites"]
         self.menuData = self.getDesktopFilesInfo(paths)
-        baseOptions   = ["[  TO MAIN MENU  ]", "[ Favorites ]"]
         query         = ""
 
         while True:
             try:
                 self.clear()
                 group = self.call_method("mainMenu")["group"]
+                self.clear()
+
                 if "Search..." in group:
                     query = self.call_method("searchMenu")["query"]
                 if "Favorites" in group:
                     query = self.call_method("favoritesMenu")["faves"]
+                    continue
                 if "[ Exit ]" in group:
                     break
 
-                self.clear()
                 progsList = ["[  TO MAIN MENU  ]"]
                 progsList += self.getSubgroup(group, query)
                 entry     = self.call_method("subMenu", [group, progsList])["prog"]
+
+                self.logger.debug(entry)
                 if entry not in baseOptions:
+                    self.logger.info("[Executing Program] Group: {} Entry: {}".format(group, entry))
                     self.executeProgram(group, entry)
             except Exception as e:
-                pass
+                self.logger.error(e)
 
 
     def call_method(self, method_name, data = None):
@@ -155,7 +160,7 @@ class Main(Context):
         program = parts[0].strip()
         comment = parts[1].strip()
 
-        if "[ Search ]" in group:
+        if "Search..." in group:
             gkeys = self.menuData.keys()
             for gkey in gkeys:
                 self.pre_execute(self.menuData[gkey], program, comment)

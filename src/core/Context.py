@@ -54,6 +54,7 @@ class Context(StylesMixin):
 
 
     def favoritesMenu(self, _grouplist = None):
+        GROUPS = ["[  TO MAIN MENU  ]", "This is a stub method for Favorites..."]
         grouplist = GROUPS if not _grouplist else _grouplist
         menu = {
                 'type': 'list',
@@ -61,6 +62,8 @@ class Context(StylesMixin):
                 'message': '[  Favorites  ]',
                 'choices': grouplist
             }
+
+        return prompt(menu, style=self.theme)
 
 
     def subMenu(self, data = ["NO GROUP NAME", "NO PROGRAMS PASSED IN"]):
