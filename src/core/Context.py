@@ -17,7 +17,7 @@ from .mixins import StylesMixin
 
 GROUPS = [ "Search...", "Favorites", "Accessories", "Multimedia", "Graphics", "Office",
             "Development", "Internet", "Settings", "System", "Game", "Wine",
-            "Other", "[ Exit ]"
+            "Other", "[ Set Favorites ]", "[ Exit ]"
         ]
 
 
@@ -53,15 +53,16 @@ class Context(StylesMixin):
         return prompt(menu, style=self.theme)
 
 
-    def favoritesMenu(self, _grouplist = None):
-        GROUPS = ["[  TO MAIN MENU  ]", "This is a stub method for Favorites..."]
-        grouplist = GROUPS if not _grouplist else _grouplist
+    def setFavoritesMenu(self, _grouplist = None):
+        GROUPS = [{'name': '[  TO MAIN MENU  ]'}, {'name': 'This is a stub method for Favorites...'}]
+        grouplist = GROUPS if not _grouplist[0] else _grouplist[0]
         menu = {
-                'type': 'list',
-                'name': 'faves',
-                'message': '[  Favorites  ]',
-                'choices': grouplist
-            }
+            'type': 'checkbox',
+            'qmark': '>',
+            'message': 'Select Favorites',
+            'name': 'setFaves',
+            'choices': grouplist
+        }
 
         return prompt(menu, style=self.theme)
 

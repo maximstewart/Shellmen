@@ -1,6 +1,5 @@
 # Python imports
-import subprocess
-import os
+import os, subprocess, json
 
 from os.path import isdir, isfile, join
 from os import listdir
@@ -25,6 +24,7 @@ class Main(Context):
         paths         = ["/opt/", "/usr/share/applications/", HOME_APPS]
         baseOptions   = ["[  TO MAIN MENU  ]", "Favorites"]
         self.menuData = self.getDesktopFilesInfo(paths)
+        self.faves    =  self.loadFaves()
         query         = ""
 
         while True:
@@ -35,8 +35,15 @@ class Main(Context):
 
                 if "Search..." in group:
                     query = self.call_method("searchMenu")["query"]
-                if "Favorites" in group:
-                    query = self.call_method("favoritesMenu")["faves"]
+                if "[ Set Favorites ]" in group:
+                    progsList      = self.getSubgroup("Search...", "")
+                    fixedProgsList = []
+
+                    for prog in progsList:
+                        fixedProgsList.append({'name': prog})
+
+                    self.faves = self.call_method("setFavoritesMenu", [fixedProgsList])["setFaves"]
+                    self.saveFaves(self.faves)
                     continue
                 if "[ Exit ]" in group:
                     break
@@ -57,6 +64,35 @@ class Main(Context):
         mName  = str(method_name)
         method = getattr(self, mName, lambda data: "No valid key passed...\nkey= " + mName + "\nargs= " + data)
         return method(data) if data else method()
+
+
+    def loadFaves(self, data = None):
+        configFolder = os.getenv("HOME") + "/.config/shellmen"
+        configFile   = configFolder + "/favorites.json"
+        self.logger.info("[Opening saved favorites file: {}".format(configFile))
+        faves        = []
+
+        if os.path.isdir(configFolder) == False:
+            os.mkdir(configFolder)
+        if os.path.isfile(configFile) == False:
+            open(configFile, 'a').close()
+
+        with open(configFile) as infile:
+            try:
+                faves = json.load(infile)
+            except Exception as e:
+                pass
+
+            infile.close()
+
+        return faves
+
+
+    def saveFaves(self, data = None):
+        configFolder = os.getenv("HOME") + "/.config/shellmen"
+        configFile   = configFolder + "/favorites.json"
+        with open(configFile, 'w') as outfile:
+            json.dump(data, outfile)
 
 
     def getDesktopFilesInfo(self, paths):
@@ -143,7 +179,7 @@ class Main(Context):
                     if query.lower() in opt["title"].lower() or query.lower() in opt["fileName"].lower():
                             desktopObjs.append( opt["title"] + " || " + opt["fileName"].replace(".desktop", "") )
         elif "Favorites" in group:
-            pass
+            desktopObjs = self.faves
         else:
             for opt in self.menuData[group]:
                 keys = opt.keys()
