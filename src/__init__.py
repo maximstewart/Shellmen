@@ -196,7 +196,7 @@ class Main(Context):
         program = parts[0].strip()
         comment = parts[1].strip()
 
-        if "Search..." in group:
+        if "Search..." in group or "Favorites" in group:
             gkeys = self.menuData.keys()
             for gkey in gkeys:
                 self.pre_execute(self.menuData[gkey], program, comment)
