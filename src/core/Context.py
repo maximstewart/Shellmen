@@ -15,9 +15,9 @@ from .mixins import StylesMixin
 
 
 
-GROUPS = [ "Favorites", "Accessories", "Multimedia", "Graphics", "Office",
+GROUPS = [ "Search...", "Favorites", "Accessories", "Multimedia", "Graphics", "Office",
             "Development", "Internet", "Settings", "System", "Game", "Wine",
-            "Other", "Search...", "[ Exit ]"
+            "Other", "[ Exit ]"
         ]
 
 

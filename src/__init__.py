@@ -187,7 +187,7 @@ class Main(Context):
         DEVNULL = open(os.devnull, 'w')
         command = option.split("%")[0]
         self.logger.debug(command)
-        subprocess.Popen(command.split(), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
+        subprocess.Popen(command.split(), cwd=os.getenv("HOME"), start_new_session=True, stdout=DEVNULL, stderr=DEVNULL)
 
 
     def clear(self):
