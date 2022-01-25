@@ -9,7 +9,6 @@ import json
 from PyInquirer import style_from_dict, Token, prompt, Separator
 
 # Application imports
-from .utils import Logger
 from .mixins import StylesMixin
 
 
@@ -21,67 +20,66 @@ GROUPS = [ "Search...", "Favorites", "Accessories", "Multimedia", "Graphics", "O
         ]
 
 
-class Context(StylesMixin):
+class Menu(StylesMixin):
     """
         The menu class has sub methods that are called per run.
     """
-    def __init__(self, args):
+    def __init__(self, settings, args):
         """
             Construct a new 'Menu' object which pulls in mixins.
             :param args: The terminal passed arguments
 
             :return: returns nothing
         """
-        self.logger = Logger().get_logger("MAIN")
-        # Set the theme
-        self.theme    = self.call_method(args.theme)
-        self.menuData = None
+        self.logger    = settings.get_logger()
+        self.theme     = self.call_method(args.theme)
+        self.menu_data = None
 
 
-    def mainMenu(self, _grouplist = None):
+    def main_menu(self, _group_list = None):
         """
             Displays the main menu using the defined GROUPS list...
         """
-        grouplist = GROUPS if not _grouplist else _grouplist
+        group_list = GROUPS if not _group_list else _group_list
         menu = {
                 'type': 'list',
                 'name': 'group',
                 'message': '[  MAIN MENU  ]',
-                'choices': grouplist
+                'choices': group_list
             }
 
         return prompt(menu, style=self.theme)
 
 
-    def setFavoritesMenu(self, _grouplist = None):
-        GROUPS = [{'name': '[  TO MAIN MENU  ]'}, {'name': 'This is a stub method for Favorites...'}]
-        grouplist = GROUPS if not _grouplist[0] else _grouplist[0]
+    def set_favorites_menu(self, _group_list = None):
+        GROUPS     = [{'name': '[  TO MAIN MENU  ]'}, {'name': 'This is a stub method for Favorites...'}]
+        group_list = GROUPS if not _group_list[0] else _group_list[0]
         menu = {
             'type': 'checkbox',
             'qmark': '>',
             'message': 'Select Favorites',
             'name': 'setFaves',
-            'choices': grouplist
+            'choices': group_list
         }
 
         return prompt(menu, style=self.theme)
 
 
-    def subMenu(self, data = ["NO GROUP NAME", "NO PROGRAMS PASSED IN"]):
-        group    = data[0]
-        progList = data[1]
+    def sub_menu(self, data = ["NO GROUP NAME", "NO PROGRAMS PASSED IN"]):
+        group     = data[0]
+        prog_list = data[1]
 
         menu = {
                 'type': 'list',
                 'name': 'prog',
-                'message': '[  ' + group + '  ]',
-                'choices': progList
+                'message': f'[  {group}  ]',
+                'choices': prog_list
             }
 
         return prompt(menu, style=self.theme)
 
 
-    def searchMenu(self):
+    def search_menu(self):
         menu = {
             'type': 'input',
             'name': 'query',
