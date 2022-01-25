@@ -13,7 +13,7 @@ class ProcessorMixin:
         program = parts[0].strip()
         comment = parts[1].strip()
 
-        if "Search..." in group or "Favorites" in group:
+        if group in ["Search...", "Favorites"]:
             group_keys = self.menu_data.keys()
             for group_key in group_keys:
                 self.pre_execute(self.menu_data[group_key], program, comment)
@@ -22,16 +22,16 @@ class ProcessorMixin:
 
 
     def pre_execute(self, options, program, comment):
-        for opt in options:
-            if program in opt["title"]:
-                keys = opt.keys()
-                if comment in opt["comment"] or comment in opt["fileName"]:
+        for option in options:
+            if program in option["title"]:
+                keys = option.keys()
+                if comment in [option["comment"], option["fileName"]]:
                     try:
                         self.execute(opt["tryExec"])
                     except Exception as e:
                         try:
-                            if "exec" in keys and len(opt["exec"]):
-                                self.execute(opt["exec"])
+                            if "exec" in keys and len(option["exec"]):
+                                self.execute(option["exec"])
                         except Exception as e:
                             self.logger.debug(e)
 

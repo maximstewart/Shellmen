@@ -42,10 +42,10 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
                     programs_list       = self.get_sub_group("Search...", "")
                     fixed_programs_list = []
 
-                    for prog in programs_list:
-                        fixed_programs_list.append({'name': prog})
+                    for program in programs_list:
+                        fixed_programs_list.append({'name': program})
 
-                    self.favorites = self.call_method("set_favorites_menu", [fixed_programs_list])["setFaves"]
+                    self.favorites = self.call_method("set_favorites_menu", [fixed_programs_list])["set_faves"]
                     self.save_faves(self.favorites)
                     continue
                 if "[ Exit ]" in group:
@@ -60,7 +60,7 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
                     self.logger.info(f"[Executing Program] Group: {group} Entry: {entry}")
                     self.execute_program(group, entry)
             except Exception as e:
-                self.logger.error(e)
+                self.logger.error(e.printStackTrace())
 
 
 
@@ -150,22 +150,22 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
         if "Search..." in group:
             group_keys = self.menu_data.keys()
             for group_key in group_keys:
-                for opt in self.menu_data[group_key]:
-                    keys = opt.keys()
-                    if "comment" in keys and len(opt["comment"]) > 0 :
-                        if query.lower() in opt["comment"].lower():
-                            desktop_objects.append( opt["title"] + " || " + opt["comment"] )
-                    if query.lower() in opt["title"].lower() or query.lower() in opt["fileName"].lower():
-                            desktop_objects.append( opt["title"] + " || " + opt["fileName"].replace(".desktop", "") )
+                for option in self.menu_data[group_key]:
+                    keys = option.keys()
+                    if "comment" in keys and len(option["comment"]) > 0 :
+                        if query.lower() in option["comment"].lower():
+                            desktop_objects.append( option["title"] + " || " + option["comment"] )
+                    if query.lower() in option["title"].lower() or query.lower() in option["fileName"].lower():
+                            desktop_objects.append( option["title"] + " || " + option["fileName"].replace(".desktop", "") )
         elif "Favorites" in group:
             desktop_objects = self.favorites
         else:
-            for opt in self.menu_data[group]:
-                keys = opt.keys()
-                if "comment" in keys and len(opt["comment"]) > 0 :
-                    desktop_objects.append( opt["title"] + " || " + opt["comment"] )
+            for option in self.menu_data[group]:
+                keys = option.keys()
+                if "comment" in keys and len(option["comment"]) > 0 :
+                    desktop_objects.append( option["title"] + " || " + option["comment"] )
                 else:
-                    desktop_objects.append( opt["title"] + " || " + opt["fileName"].replace(".desktop", "") )
+                    desktop_objects.append( option["title"] + " || " + option["fileName"].replace(".desktop", "") )
 
         return desktop_objects
 
