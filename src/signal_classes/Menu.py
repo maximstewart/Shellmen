@@ -33,7 +33,6 @@ class Menu(StylesMixin):
         """
         self.logger    = settings.get_logger()
         self.theme     = self.call_method(args.theme)
-        self.menu_data = None
 
 
     def main_menu(self, _group_list = None):
@@ -58,7 +57,7 @@ class Menu(StylesMixin):
             'type': 'checkbox',
             'qmark': '>',
             'message': 'Select Favorites',
-            'name': 'setFaves',
+            'name': 'set_faves',
             'choices': group_list
         }
 

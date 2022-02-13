@@ -14,8 +14,8 @@ class Settings:
         self._USER_HOME      = os.path.expanduser('~')
         self._CONFIG_PATH    = f"{self._USER_HOME}/.config/{app_name.lower()}"
         self._FAVORITES_FILE = f"{self._CONFIG_PATH}/favorites.json"
-        self._HOME_APPS      = f"{self._USER_HOME}/.local/share/applications/"
-        self._APP_PATHS      = ["/opt/", "/usr/share/applications/", self._HOME_APPS]
+        self._HOME_APPS      = f"{self._USER_HOME}/.local/share/applications"
+        self._APP_PATHS      = ["/usr/share/applications", self._HOME_APPS]
 
         self._logger         = Logger(self._CONFIG_PATH).get_logger()
         self._faves          = []
@@ -40,7 +40,7 @@ class Settings:
 
     def save_faves(self, data = None):
         with open(self._FAVORITES_FILE, 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, separators=(',', ':'), indent=4)
             f.close()
 
 

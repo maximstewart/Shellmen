@@ -8,32 +8,25 @@ import os, subprocess
 
 
 class ProcessorMixin:
-    def execute_program(self, group, entry):
-        parts   = entry.split("||")
-        program = parts[0].strip()
-        comment = parts[1].strip()
+    def execute_program(self, data, entry):
+        parts      = entry.split("||")
+        title      = parts[0].strip()
+        comment    = parts[1].strip()
+        chunk_data = data[title.strip()]
 
-        if group in ["Search...", "Favorites"]:
-            group_keys = self.menu_data.keys()
-            for group_key in group_keys:
-                self.pre_execute(self.menu_data[group_key], program, comment)
-        else:
-            self.pre_execute(self.menu_data[group], program, comment)
+        self.logger.info(f"[Executing Program]\n\t\tEntry: {entry}\n\t\tChunk Data: {chunk_data}")
+        self.pre_execute(chunk_data)
 
-
-    def pre_execute(self, options, program, comment):
-        for option in options:
-            if program in option["title"]:
-                keys = option.keys()
-                if comment in [option["comment"], option["fileName"]]:
-                    try:
-                        self.execute(opt["tryExec"])
-                    except Exception as e:
-                        try:
-                            if "exec" in keys and len(option["exec"]):
-                                self.execute(option["exec"])
-                        except Exception as e:
-                            self.logger.debug(e)
+    def pre_execute(self, option):
+        try:
+            self.execute(option["tryExec"])
+        except Exception as e:
+            self.logger.info(f"[Executing Program]\n\t\t Try exec failed!\n{e}")
+            try:
+                if option["exec"] and len(option["exec"]) > 0:
+                    self.execute(option["exec"])
+            except Exception as e:
+                self.logger.debug(e)
 
 
     def execute(self, option):

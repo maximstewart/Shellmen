@@ -26,5 +26,7 @@ class Controller_Data:
         self.app_paths      = self.settings.get_app_paths()
         self.favorites_path = self.settings.get_favorites_path()
         self.favorites      = self.settings.get_favorites()
+        self.menu_data      = None
+        self.flat_menu_data = {}
 
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGINT, self.tear_down)

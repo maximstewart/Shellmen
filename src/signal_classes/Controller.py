@@ -1,5 +1,5 @@
 # Python imports
-import threading, subprocess
+import threading, subprocess, traceback
 from os.path import isfile
 from os import listdir
 
@@ -46,7 +46,7 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
                         fixed_programs_list.append({'name': program})
 
                     self.favorites = self.call_method("set_favorites_menu", [fixed_programs_list])["set_faves"]
-                    self.save_faves(self.favorites)
+                    self.settings.save_faves(self.favorites)
                     continue
                 if "[ Exit ]" in group:
                     break
@@ -55,47 +55,38 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
                 programs_list += self.get_sub_group(group, query)
                 entry     = self.call_method("sub_menu", [group, programs_list])["prog"]
 
-                self.logger.debug(entry)
                 if entry not in base_options:
-                    self.logger.info(f"[Executing Program] Group: {group} Entry: {entry}")
-                    self.execute_program(group, entry)
+                    self.execute_program(self.flat_menu_data, entry)
             except Exception as e:
-                self.logger.error(e.printStackTrace())
+                self.logger.debug(f"Traceback:  {traceback.print_exc()}")
+                self.logger.debug(f"Exception:  {e}")
 
 
 
     def get_desktop_files_info(self, paths):
         menu_objects = {
-            "Accessories": [],
-            "Multimedia":  [],
-            "Graphics":    [],
-            "Game":        [],
-            "Office":      [],
-            "Development": [],
-            "Internet":    [],
-            "Settings":    [],
-            "System":      [],
-            "Wine":        [],
-            "Other":       []
+            "Accessories": {},
+            "Multimedia":  {},
+            "Graphics":    {},
+            "Game":        {},
+            "Office":      {},
+            "Development": {},
+            "Internet":    {},
+            "Settings":    {},
+            "System":      {},
+            "Wine":        {},
+            "Other":       {}
         }
 
         for path in paths:
-            if not "/opt/" in path:
-                self.list_and_update_desktop_iles(path, menu_objects);
-            else:
-                for folder in listdir(path):
-                    try:
-                        full_path = f"{path}{folder}/"
-                        self.list_and_update_desktop_iles(full_path, menu_objects);
-                    except Exception as e:
-                        self.logger.debug(e)
+            self.list_and_update_desktop_iles(path, menu_objects);
 
         return menu_objects
 
     def list_and_update_desktop_iles(self, path, menu_objects):
         try:
             for f in listdir(path):
-                full_path = f"{path}{f}"
+                full_path = f"{path}/{f}"
                 if isfile(full_path) and f.endswith(".desktop"):
                     xdg_object = DesktopEntry(full_path)
                     hidden     = xdg_object.getHidden()
@@ -107,13 +98,13 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
                         continue
 
                     if type == "Application" and groups != "":
-                        title    = xdg_object.getName()
-                        comment  = xdg_object.getComment()
-                        # icon     = xdg_object.getIcon()
-                        mainExec = xdg_object.getExec()
-                        tryExec  = xdg_object.getTryExec()
+                        title     = xdg_object.getName()
+                        comment   = xdg_object.getComment()
+                        # icon      = xdg_object.getIcon()
+                        main_exec = xdg_object.getExec()
+                        try_exec  = xdg_object.getTryExec()
 
-                        group    = ""
+                        group     = ""
                         if "Accessories" in groups or "Utility" in groups:
                             group = "Accessories"
                         elif "Multimedia" in groups or "Video" in groups or "Audio" in groups:
@@ -137,10 +128,14 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
                         else:
                             group = "Other"
 
-                        menu_objects[group].append( {"title":  title,   "groups": groups,
-                                                    "comment": comment, "exec": mainExec,
-                                                    "tryExec": tryExec, "fileName": f
-                                                })
+                        chunk_data = {
+                                        "groups": groups, "comment": comment,
+                                        "exec": main_exec, "try_exec": try_exec,
+                                        "fileName": f
+                                    }
+
+                        menu_objects[group][title] = chunk_data
+                        self.flat_menu_data[title] = chunk_data
         except Exception as e:
             self.logger.debug(e)
 
@@ -148,24 +143,24 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
     def get_sub_group(self, group, query = ""):
         desktop_objects = []
         if "Search..." in group:
-            group_keys = self.menu_data.keys()
-            for group_key in group_keys:
-                for option in self.menu_data[group_key]:
-                    keys = option.keys()
-                    if "comment" in keys and len(option["comment"]) > 0 :
-                        if query.lower() in option["comment"].lower():
-                            desktop_objects.append( option["title"] + " || " + option["comment"] )
-                    if query.lower() in option["title"].lower() or query.lower() in option["fileName"].lower():
-                            desktop_objects.append( option["title"] + " || " + option["fileName"].replace(".desktop", "") )
+            for key in self.flat_menu_data.keys():
+                option = self.flat_menu_data[key]
+                keys   = option.keys()
+
+                if "comment" in keys and len(option["comment"]) > 0:
+                    if query.lower() in option["comment"].lower():
+                        desktop_objects.append( f"{key} || {option['comment']}" )
+                elif query.lower() in key.lower() or query.lower() in option["fileName"].lower():
+                        desktop_objects.append( f"{key} || {option['fileName'].replace('.desktop', '')}" )
         elif "Favorites" in group:
             desktop_objects = self.favorites
         else:
             for option in self.menu_data[group]:
                 keys = option.keys()
                 if "comment" in keys and len(option["comment"]) > 0 :
-                    desktop_objects.append( option["title"] + " || " + option["comment"] )
+                    desktop_objects.append( f"{option['title']} || {option['comment']}" )
                 else:
-                    desktop_objects.append( option["title"] + " || " + option["fileName"].replace(".desktop", "") )
+                    desktop_objects.append( f"{option['title']} || {option['fileName'].replace('.desktop', '')}" )
 
         return desktop_objects
 
