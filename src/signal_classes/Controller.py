@@ -155,12 +155,14 @@ class Controller(ProcessorMixin, Menu, Controller_Data):
         elif "Favorites" in group:
             desktop_objects = self.favorites
         else:
-            for option in self.menu_data[group]:
-                keys = option.keys()
-                if "comment" in keys and len(option["comment"]) > 0 :
-                    desktop_objects.append( f"{option['title']} || {option['comment']}" )
-                else:
-                    desktop_objects.append( f"{option['title']} || {option['fileName'].replace('.desktop', '')}" )
+            for key in self.menu_data[group]:
+                option = self.flat_menu_data[key]
+                keys   = option.keys()
+                if "comment" in keys and len(option["comment"]) > 0:
+                    if query.lower() in option["comment"].lower():
+                        desktop_objects.append( f"{key} || {option['comment']}" )
+                elif query.lower() in key.lower() or query.lower() in option["fileName"].lower():
+                        desktop_objects.append( f"{key} || {option['fileName'].replace('.desktop', '')}" )
 
         return desktop_objects
 
