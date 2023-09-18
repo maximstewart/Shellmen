@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# . CONFIG.sh
+
+# set -o xtrace       ## To debug scripts
+# set -o errexit      ## To exit on error
+# set -o errunset     ## To exit if a variable is referenced but not set
+
+
+function main() {
+    call_path=`pwd`
+    path=""
+
+    cd "/opt/"
+    python /opt/shellmen.zip "$@"
+}
+main "$@";
