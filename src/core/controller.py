@@ -6,6 +6,7 @@
 from .mixins.processor_mixin import ProcessorMixin
 from .controller_data import ControllerData
 from .widgets.desktop_files import DdesktopFiles
+from .widgets.dir_watcher import DirWatcher
 from .widgets.menu import Menu
 
 
@@ -32,4 +33,5 @@ class Controller(ProcessorMixin, ControllerData):
 
     def _load_widgets(self, args, unknownargs):
         DdesktopFiles()
+        DirWatcher()
         Menu(args, unknownargs)
