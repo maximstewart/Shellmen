@@ -16,55 +16,14 @@ class Menu:
     """
 
     def __init__(self, args, unknownargs):
-        self.theme   = settings_manager.call_method(settings_manager.get_styles(), args.theme)
-        base_options = ["[  TO MAIN MENU  ]", "Favorites"]
-        body_menu    = [ x.title() for x in settings.filters.__slots__ ]
-        GROUPS       = [ "Search...", "Favorites" ] + body_menu + [ "[ Set Favorites ]", "[ Exit ]" ]
-        query        = ""
-        group        = ""
+        self.theme = settings_manager.call_method(settings_manager.get_styles(), args.theme)
 
         self._setup_styling()
         self._setup_signals()
         self._subscribe_to_events()
         self._load_widgets()
 
-        while True:
-            try:
-                event_system.emit("clear_console")
-                results = None
-                group   = self.main_menu(GROUPS)["group"]
-                event_system.emit("clear_console")
-
-                match group:
-                    case "Search...":
-                        query   = self.search_menu()["query"]
-                        results = event_system.emit_and_await("get_search_results", (query.lower(),))
-                    case "Favorites":
-                        results = event_system.emit_and_await("get_favorites_results", (group,))
-                    case "[ Set Favorites ]":
-                        results       = event_system.emit_and_await("get_search_results", ("",))
-                        programs_list = [{"name" : "[  TO MAIN MENU  ]"}] + [
-                            {"name": prog, "checked": prog in settings.favorites["apps"]} for prog, exec in results
-                        ]
-                        favorites     = self.set_favorites_menu(programs_list)["set_faves"]
-                        settings.favorites["apps"] = favorites
-                        continue
-                    case "[ Exit ]":
-                        break
-                    case _:
-                        results = event_system.emit_and_await("get_sub_group", (group,))
-
-                programs_list = ["[  TO MAIN MENU  ]"] + [prog for prog, exec in results]
-                entry         = self.sub_menu([group, programs_list])["prog"]
-                if entry not in base_options:
-                    for prog, exec_ops in results:
-                        if prog == entry:
-                            event_system.emit("execute_program", (exec_ops,))
-                            break
-            except Exception as e:
-                logger.debug(f"Traceback:  {traceback.print_exc()}")
-                logger.debug(f"Exception:  {e}")
-
+        self.run_loop()
         settings_manager.save_settings()
 
 
@@ -79,6 +38,65 @@ class Menu:
 
     def _load_widgets(self):
         ...
+
+
+    def run_loop(self):
+        base_options = [ "[  TO MAIN MENU  ]", "Favorites" ]
+        body_menu    = [ x.title() for x in settings.filters.__slots__ ]
+        GROUPS       = [ "Search...", "Favorites" ] + body_menu + [ "[ Set Favorites ]", "[ Exit ]" ]
+        query        = ""
+        group        = ""
+
+        while True:
+            try:
+                group   = self.get_group(GROUPS)
+                results = self.load_group(group)
+                if "CONTINUE" in results:
+                    continue
+
+                if "BREAK" in results:
+                    break
+
+                self.process_subgroup(base_options, group, results)
+            except Exception as e:
+                logger.debug(f"Traceback:  {traceback.print_exc()}")
+
+    def get_group(self, GROUPS):
+        event_system.emit("clear_console")
+        group = self.main_menu(GROUPS)["group"]
+        event_system.emit("clear_console")
+        return group
+
+    def load_group(self, group):
+        match group:
+            case "Search...":
+                query   = self.search_menu()["query"]
+                results = event_system.emit_and_await("get_search_results", (query.lower(),))
+            case "Favorites":
+                results = event_system.emit_and_await("get_favorites_results", (group,))
+            case "[ Set Favorites ]":
+                results       = event_system.emit_and_await("get_search_results", ("",))
+                programs_list = [{"name" : "[  TO MAIN MENU  ]"}] + [
+                    {"name": prog, "checked": prog in settings.favorites["apps"]} for prog, exec in results
+                ]
+                favorites     = self.set_favorites_menu(programs_list)["set_faves"]
+                settings.favorites["apps"] = favorites
+                results = ["CONTINUE"]
+            case "[ Exit ]":
+                results = ["BREAK"]
+            case _:
+                results = event_system.emit_and_await("get_sub_group", (group,))
+
+        return results
+
+    def process_subgroup(self, base_options, group, results):
+        programs_list = ["[  TO MAIN MENU  ]"] + [prog for prog, exec in results]
+        entry         = self.sub_menu([group, programs_list])["prog"]
+        if entry not in base_options:
+            for prog, exec_ops in results:
+                if prog == entry:
+                    event_system.emit("execute_program", (exec_ops,))
+                    break
 
 
     def main_menu(self, _group_list = None):
