@@ -1,7 +1,7 @@
 # Python imports
 import pickle
 from os import listdir
-from dataclasses import fields
+from dataclasses import fields, asdict
 
 # Lib imports
 from xdg.DesktopEntry import DesktopEntry
@@ -21,7 +21,6 @@ class DdesktopFiles:
         self._setup_signals()
         self._subscribe_to_events()
         self.reload_desktop_entries()
-        self.create_groups_mapping()
 
 
     def _setup_styling(self):
@@ -86,13 +85,13 @@ class DdesktopFiles:
                 self.groups[group].append(entry)
 
     def cross_append_groups(self):
-        fields_data = fields(settings.filters)
+        fields_data = asdict(settings.filters)
         for field in fields_data:
-            title    = field.name.title()
+            title    = field.title()
             to_merge = []
 
-            for group in field.default_factory():
-                to_merge += self.groups[group]
+            for group in fields_data[field]:
+                to_merge += self.groups[group.title()]
 
             sub_map = {}
             # NOTE: Will "hash" filters ("to_merge" var) first so that target self.groups[title] overrites with its own if any entry exists.
